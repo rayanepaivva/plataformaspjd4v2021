@@ -11,20 +11,20 @@ public class EnemyController : MonoBehaviour
     public float moveSpeed;
     public bool useTransform;
     public bool shouldFlip;
-    
+
     [SerializeField] private Vector2 movePosition;
     [SerializeField] private Transform moveDestination;
-    
+
     private Vector2 _initialPosition;
 
     private Vector2 _moveTarget;
-    
+
     private Vector2 _currentMoveDirection;
-    
+
     private bool _isReturning;
 
     private float _originalLocalScaleX;
-    
+
     private int _currentEnergy;
 
     private Animator _animator;
@@ -32,9 +32,9 @@ public class EnemyController : MonoBehaviour
     private bool _isAlive;
 
     private Collider2D _collider2D;
-    
+
     private AudioSource _audioSource;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,9 +43,9 @@ public class EnemyController : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
 
         _isAlive = true;
-        
+
         if (shouldFlip) _originalLocalScaleX = transform.localScale.x;
-        
+
         if (useTransform)
         {
             _moveTarget = moveDestination.localPosition;
@@ -54,8 +54,9 @@ public class EnemyController : MonoBehaviour
         {
             _moveTarget = movePosition;
         }
+
         _initialPosition = transform.position;
-        _currentMoveDirection = (_initialPosition + _moveTarget - (Vector2) transform.position).normalized;
+        _currentMoveDirection = (_initialPosition + _moveTarget - (Vector2)transform.position).normalized;
 
         _currentEnergy = maxEnergy;
     }
@@ -63,7 +64,7 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_isAlive) MovePlatform();
+        if (_isAlive) MovePlatform();
     }
 
     private void MovePlatform()
@@ -73,7 +74,7 @@ public class EnemyController : MonoBehaviour
             if (Vector2.Distance(transform.position, _initialPosition + _moveTarget) < 1f)
             {
                 _isReturning = true;
-                _currentMoveDirection = (_initialPosition - (Vector2) transform.position).normalized;
+                _currentMoveDirection = (_initialPosition - (Vector2)transform.position).normalized;
             }
         }
         else
@@ -81,7 +82,7 @@ public class EnemyController : MonoBehaviour
             if (Vector2.Distance(transform.position, _initialPosition) < 1f)
             {
                 _isReturning = false;
-                _currentMoveDirection = (_initialPosition + _moveTarget - (Vector2) transform.position).normalized;
+                _currentMoveDirection = (_initialPosition + _moveTarget - (Vector2)transform.position).normalized;
             }
         }
 
@@ -91,7 +92,8 @@ public class EnemyController : MonoBehaviour
                 transform.localScale =
                     new Vector3(-_originalLocalScaleX, transform.localScale.y, transform.localScale.z);
             else
-                transform.localScale = new Vector3(_originalLocalScaleX, transform.localScale.y, transform.localScale.z);
+                transform.localScale =
+                    new Vector3(_originalLocalScaleX, transform.localScale.y, transform.localScale.z);
         }
 
         transform.position += (Vector3)_currentMoveDirection * moveSpeed * Time.deltaTime;
@@ -125,7 +127,7 @@ public class EnemyController : MonoBehaviour
         {
             Debug.DrawLine(transform.position, transform.position + (Vector3)movePosition, Color.red);
         }
-        
+
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -135,7 +137,7 @@ public class EnemyController : MonoBehaviour
             other.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
         }
     }
-    
+
     private void OnCollisionStay2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Player"))
